@@ -9,11 +9,17 @@ services:
   sqlite3:
     image: keinos/sqlite3:latest
     container_name: sqlite-almacen
-    command: sqlite3 /root/db/sample.db
     stdin_open: true
     tty: true
     volumes:
-      - "./db/:/root/db/"
+    # in linux
+      #- "./db/:/root/db/"
+      # in windows
+      - "./db:/db"
+    command: sqlite3 /db/Almacen.db
+    ports:
+      - '9000:9000' # expose ports - HOST:CONTAINER
+    restart: unless-stopped
 networks:
   default:
     name: nat
