@@ -1,3 +1,4 @@
+using almacenAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace almacenAPI.Controllers;

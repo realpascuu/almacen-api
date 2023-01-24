@@ -13,7 +13,7 @@ apellidos varchar (25),
 dni varchar (9),
 telefono int,
 calle varchar (50),
-codpos int ,
+codpos int,
 fechanac date
 );
 

@@ -1,4 +1,4 @@
-namespace almacenAPI;
+namespace almacenAPI.Models;
 
 public class WeatherForecast
 {

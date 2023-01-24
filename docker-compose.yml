@@ -6,6 +6,11 @@ services:
     command: dotnet run
     ports:
       - "5000:80"
+    volumes:
+    # in linux
+      #- "./db/:/root/db/"
+      # in windows
+      - "./db:/db"
   sqlite3:
     image: keinos/sqlite3:latest
     container_name: sqlite-almacen
