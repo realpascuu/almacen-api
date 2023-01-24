@@ -70,8 +70,22 @@ codArt int CONSTRAINT fk_articulo  REFERENCES Articulo (cod),
 pedido int CONSTRAINT fk_pedido REFERENCES Pedido (numped)
 );
 
+create TABLE Movimiento
+(
+id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+almacen_salida int CONSTRAINT fk_almacen_salida REFERENCES Almacen (id),
+almacen_entrada int CONSTRAINT fk_almacen_entrada REFERENCES Almacen (id),
+articulo string,
+cantidad int
+);
 
-
+create TABLE ArticuloMovimiento
+(
+    id INTEGER not NULL PRIMARY KEY AUTOINCREMENT,
+    articulo string,
+    cantidad int,
+    idmovimiento int CONSTRAINT fk_movimiento REFERENCES Movimiento (id)
+);
 
 
 
