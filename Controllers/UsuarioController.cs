@@ -1,5 +1,6 @@
 using almacenAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace almacenAPI.Controllers;
@@ -21,8 +22,8 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpGet]
-    [Route("list")]
-    public async Task<ActionResult<List<Usuario>>> GetList(
+    [Route("page")]
+    public async Task<ActionResult<Pagination<Usuario>>> GetList(
         [FromQuery]
         string? orderby = "email",
         [FromQuery]
@@ -32,12 +33,26 @@ public class UsuariosController : ControllerBase
     )
     {
         var offset =  ( page - 1 ) * limit;
-        return await context.Usuario
+        int total_objects = context.Usuario.ToList().Count;
+        var total_pages = (int)Math.Ceiling((total_objects / (double)limit));
+        if(page < 1 || page > total_pages) {
+            return BadRequest($"Page {page} not suported");
+        }
+
+        var results = await context.Usuario
         .OrderBy(/*Usuario.getFunctionOrderBy(orderby)*/item => item.email)
         //.ThenBy(Usuario.getFunctionOrderBy("email"))
         .Skip(offset)
         .Take(limit)
         .ToListAsync();
+
+        return new Pagination<Usuario>(
+            total_objects,
+            page,
+            results,
+            limit,
+            total_pages
+        );
     }
 
     [HttpGet("{email}")]
