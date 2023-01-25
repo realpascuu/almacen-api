@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Data;
 using System.Data.SQLite;
 using System.Web.Services;
@@ -638,3 +638,4 @@ public class Service : System.Web.Services.WebService
     //get articulos por nombre
 
 }
+*/
