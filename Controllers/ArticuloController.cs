@@ -5,6 +5,7 @@ using System.Data.SQLite;
 using System.Data;
 using System.Text.Json;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace almacenAPI.Controllers;
 [ApiController]
@@ -19,7 +20,7 @@ public class ArticulosController : ControllerBase
     }
 
     [HttpGet]
-    public HttpResponseMessage Get()
+    public ActionResult Get()
     {
         var articulos = new List<Articulo>();
         using (SQLiteConnection connection = new SQLiteConnection("Data Source= db\\Almacen.db"))
@@ -43,8 +44,17 @@ public class ArticulosController : ControllerBase
                     }
                 }
             }
-            
+            //Create my object
+            var myData = new
+            {
+                Host = @"sftp.myhost.gr",
+                UserName = "my_username",
+                Password = "my_password",
+                SourceDir = "/export/zip/mypath/",
+                articulos = articulos
+            };
+            string jsonData = JsonConvert.SerializeObject(myData);
+            return Ok(jsonData);
         }
-        return new HttpResponseMessage(HttpStatusCode.Unauthorized);
     }
 }
