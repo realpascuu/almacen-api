@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data.SQLite;
 using System.Data;
 using System.Text.Json;
+using System.Net;
 
 namespace almacenAPI.Controllers;
 [ApiController]
@@ -18,7 +19,7 @@ public class ArticulosController : ControllerBase
     }
 
     [HttpGet]
-    public List<Articulo> Get()
+    public HttpResponseMessage Get()
     {
         var articulos = new List<Articulo>();
         using (SQLiteConnection connection = new SQLiteConnection("Data Source= db\\Almacen.db"))
@@ -31,20 +32,19 @@ public class ArticulosController : ControllerBase
                 {
                     while (reader.Read())
                     {
-                        articulos.Add(new Articulo
-                        {
+                        articulos.Add(
+                            new Articulo{
                             cod = Convert.ToInt32(reader["cod"]),
                             nombre = Convert.ToString(reader["nombre"]),
                             pvp = Convert.ToInt32(reader["pvp"]),
-                            imagen = Convert.ToString(reader["imagen"])
-                            
-                            
+                            imagen = Convert.ToString(reader["imagen"]),
+                            categoria = Convert.ToString(reader["categoria"])
                         });
                     }
                 }
             }
             
         }
-            return articulos;
+        return new HttpResponseMessage(HttpStatusCode.Unauthorized);
     }
 }
