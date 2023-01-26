@@ -109,6 +109,7 @@ INSERT INTO Articulo (nombre, especificaciones, pvp, imagen, categoria) values (
 INSERT INTO Almacen_Articulo values(1,1,20);
 INSERT INTO Almacen_Articulo values(1,2,30);
 INSERT INTO Almacen_Articulo values(1,3,10);
+INSERT INTO Almacen_Articulo values(2,3,10);
 
 INSERT INTO Pedido (fecha_pedido) values('2023-01-15');
 INSERT INTO Pedido (venta,fecha_pedido) values(false,'2023-01-17');
