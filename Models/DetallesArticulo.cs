@@ -2,12 +2,25 @@ namespace almacenAPI.Models
 {
     public class DetallesArticulo<T>
     {
-        public List<T> producto { get; set; }
+        public string nombre { get; set; }
+        public string especificaciones { get; set; }
+        public float pvp { get; set; }
+        public int cod { get; set; }
+        public string categoria { get; set; }
+
         public DetallesArticulo(
-            List<T> producto
+           string nombre,
+           string especificaciones ,
+           float pvp ,
+           int cod ,
+           string categoria 
         ) 
         {
-            this.producto = producto;
+            this.nombre = nombre;
+            this.especificaciones = especificaciones;
+            this.pvp = pvp;
+            this.cod = cod;
+            this.categoria = categoria;
         }
     }
 }

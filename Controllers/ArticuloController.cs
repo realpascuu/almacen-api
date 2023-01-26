@@ -66,13 +66,17 @@ public class ArticuloController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<DetallesArticulo<Articulo>>> GetById()
     {
-         List<Articulo> producto = new List<Articulo>();
+         //List<Articulo> producto = new List<Articulo>();
          var res = context.Articulo.FirstOrDefault(item => item.cod == Convert.ToInt32(ControllerContext.RouteData.Values["id"]));
     
         if(res!=null){
-        producto.Add(res);
+        //producto.Add(res);
          return new DetallesArticulo<Articulo>(
-             producto
+              res.nombre,
+              res.especificaciones,
+              res.pvp,
+              res.cod,
+              res.categoria
          );
         }
         /*
