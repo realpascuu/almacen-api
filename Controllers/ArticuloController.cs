@@ -120,9 +120,9 @@ public class ArticuloController : ControllerBase
     }
     
 
- [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete() {
-          var res = context.Articulo.SingleOrDefault(item => item.cod == Convert.ToInt32(ControllerContext.RouteData.Values["id"]));
+    [HttpDelete("{cod}")]
+    public async Task<ActionResult> Delete(int cod) {
+          var res = context.Articulo.SingleOrDefault(item => item.cod == cod);
           if(res != null) {
             /*
             var articulos = await context.Articulo.Where(item => item.cod == Convert.ToInt32(ControllerContext.RouteData.Values["id"])).ToListAsync();
@@ -136,6 +136,4 @@ public class ArticuloController : ControllerBase
         }
         return BadRequest("Error, no se ha borrado ");
     }
-
-
 }
