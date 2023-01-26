@@ -19,8 +19,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//RELATIVE PATH PARA DARIO PLS.
 builder.Services.AddDbContext<ApplicationDbContext>(opciones =>
-opciones.UseSqlite("Data Source=/db/Almacen.db"));
+opciones.UseSqlite("Data Source=db\\Almacen.db"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
