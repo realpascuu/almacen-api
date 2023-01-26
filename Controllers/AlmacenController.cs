@@ -56,15 +56,49 @@ public class AlmacenController : ControllerBase
     }
 
     [HttpGet("{nombre}")]
-    public async Task<ActionResult<Almacen>> GetById(String nombre)
+    
+    public async Task<ActionResult<Pagination<Almacen_ArticuloAll>>> GetById(
+        String nombre,
+        [FromQuery]
+        string? orderby = "nombre",
+        [FromQuery]
+        int page = 1, 
+        [FromQuery]
+        int limit = 6)
     {
-        var almacen = context.Almacen.FirstOrDefault(item => item.nombre == nombre);
-        if(almacen != null) {
-            return almacen;
+
+       
+
+        Almacen almacen =context.Almacen.FirstOrDefault(item => item.nombre == nombre);
+        if (almacen != null){
+             List<Almacen_ArticuloAll> results = new List<Almacen_ArticuloAll>();
+
+        var articulos = await context.Almacen_Articulo.Where(item => item.codAlm == almacen.id).ToListAsync();
+        foreach (var articulo in articulos)
+        {
+            results.Add(new Almacen_ArticuloAll(articulo.cantidad, context.Articulo.SingleOrDefault(item=>item.cod == articulo.codArt).nombre));
+        }
+        
+        var offset =  ( page - 1 ) * limit;
+        int total_objects = results.ToList().Count;
+        var total_pages = (int)Math.Ceiling((total_objects / (double)limit));
+        if(page < 1 || page > total_pages) {
+            return BadRequest($"Page {page} not suported");}
+        var items = new Pagination<Almacen_ArticuloAll>(          
+            total_objects,
+            page,
+            results,
+            limit,
+            total_pages
+        );
+        if(items != null) {
+           return items;
+           
+        }
         }
         return BadRequest($"Almacen with name {nombre} not found");
     }
-
+    
     [HttpPost]
     public async Task<ActionResult> Post(Almacen almacen) {
         

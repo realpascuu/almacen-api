@@ -25,7 +25,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(opciones =>
 // docker 
 //opciones.UseSqlite("Data Source=/db/Almacen.db"));
 // develop
-opciones.UseSqlite("Data Source=db\\Almacen.db"));
+opciones.UseSqlite("Data Source=/db/Almacen.db"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

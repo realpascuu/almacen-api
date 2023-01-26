@@ -18,6 +18,7 @@ public class ApplicationDbContext: DbContext
     public DbSet<Linped> Linped { get; set; }
     public DbSet<Articulo> Articulo { get; set; }
     public DbSet<Almacen_Articulo> Almacen_Articulo { get; set; }
+
     public DbSet<Almacen> Almacen { get; set; }
     public DbSet<Categoria> Categoria { get; set; }
 
@@ -26,4 +27,5 @@ public class ApplicationDbContext: DbContext
         modelBuilder.Entity<Almacen_Articulo>()
             .HasKey(b => new { b.codArt, b.codAlm });
     }
+
 }
