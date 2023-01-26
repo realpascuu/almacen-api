@@ -28,7 +28,9 @@ public class ArticuloController : ControllerBase
         [FromQuery]
         int page = 1, 
         [FromQuery]
-        int limit = 6
+        int limit = 6,
+        [FromQuery]
+        String? nombre = null 
     )
     {
         var offset =  ( page - 1 ) * limit;
@@ -37,11 +39,19 @@ public class ArticuloController : ControllerBase
         if(page < 1 || page > total_pages) {
             return BadRequest($"Page {page} not suported");
         }
-
-        var results = await context.Articulo
-        .Skip(offset)
-        .Take(limit)
-        .ToListAsync();
+        var results = new List<Articulo>();
+        if(nombre != null) {
+            results = await context.Articulo
+            .Where(item => item.nombre.Contains(nombre))
+            .Skip(offset)
+            .Take(limit)
+            .ToListAsync();
+        } else {
+            results = await context.Articulo
+            .Skip(offset)
+            .Take(limit)
+            .ToListAsync();
+        }
 
         int previousPage = -1;
         int nextPage = -1;
@@ -117,15 +127,22 @@ public class ArticuloController : ControllerBase
     }
     
 
- [HttpPost]
- [Route("crear")]
-    public async Task<ActionResult> Post([FromBody] Articulo json) {
-        try {
-            var result = context.Add(json);
+ [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete() {
+          var res = context.Articulo.SingleOrDefault(item => item.cod == Convert.ToInt32(ControllerContext.RouteData.Values["id"]));
+          if(res != null) {
+            /*
+            var articulos = await context.Articulo.Where(item => item.cod == Convert.ToInt32(ControllerContext.RouteData.Values["id"])).ToListAsync();
+            foreach(Articulo l in articulos) {
+                context.Articulo.Remove(l);    
+            }
+            */
+            context.Articulo.Remove(res);
             await context.SaveChangesAsync();
             return Ok();
-        } catch(Exception) {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error updating data");
         }
+        return BadRequest("Error, no se ha borrado ");
     }
+
+
 }
