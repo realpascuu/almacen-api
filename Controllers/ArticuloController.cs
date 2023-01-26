@@ -116,4 +116,16 @@ public class ArticuloController : ControllerBase
         );
     }
     
+
+ [HttpPost]
+ [Route("crear")]
+    public async Task<ActionResult> Post([FromBody] Articulo json) {
+        try {
+            var result = context.Add(json);
+            await context.SaveChangesAsync();
+            return Ok();
+        } catch(Exception) {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error updating data");
+        }
+    }
 }
