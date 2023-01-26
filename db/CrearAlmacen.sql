@@ -40,13 +40,13 @@ especificaciones TEXT,
 pvp number (6,2),
 imagen text,
 categoria varchar (25) not null,
-CONSTRAINT fk_categoria FOREIGN KEY (categoria) REFERENCES Categoria (categoria)
+CONSTRAINT fk_categoria FOREIGN KEY (categoria) REFERENCES Categoria (categoria) ON DELETE CASCADE
 );
 
 CREATE TABLE Almacen_Articulo
 (
-    codAlm int CONSTRAINT fk_almacen   REFERENCES Almacen (id),
-    codArt int CONSTRAINT fk_articulo   REFERENCES Articulo (cod),
+    codAlm int CONSTRAINT fk_almacen   REFERENCES Almacen (id) ON DELETE CASCADE,
+    codArt int CONSTRAINT fk_articulo   REFERENCES Articulo (cod) ON DELETE CASCADE,
     cantidad int not null,
     CONSTRAINT pk_almacen_articulo PRIMARY KEY (codAlm, codArt)
     
@@ -66,15 +66,15 @@ CREATE TABLE Linped
 (
 linea INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,
 cantidad int DEFAULT 0,
-codArt int CONSTRAINT fk_articulo  REFERENCES Articulo (cod),
-pedido int CONSTRAINT fk_pedido REFERENCES Pedido (numped)
+codArt int CONSTRAINT fk_articulo  REFERENCES Articulo (cod) ON DELETE CASCADE,
+pedido int CONSTRAINT fk_pedido REFERENCES Pedido (numped) ON DELETE CASCADE
 );
 
 create TABLE Movimiento
 (
 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-almacen_salida int CONSTRAINT fk_almacen_salida REFERENCES Almacen (id),
-almacen_entrada int CONSTRAINT fk_almacen_entrada REFERENCES Almacen (id),
+almacen_salida int CONSTRAINT fk_almacen_salida REFERENCES Almacen (id) ON DELETE CASCADE,
+almacen_entrada int CONSTRAINT fk_almacen_entrada REFERENCES Almacen (id) ON DELETE CASCADE,
 articulo string,
 cantidad int
 );
@@ -84,7 +84,7 @@ create TABLE ArticuloMovimiento
     id INTEGER not NULL PRIMARY KEY AUTOINCREMENT,
     articulo string,
     cantidad int,
-    idmovimiento int CONSTRAINT fk_movimiento REFERENCES Movimiento (id)
+    idmovimiento int CONSTRAINT fk_movimiento REFERENCES Movimiento (id) ON DELETE CASCADE
 );
 
 

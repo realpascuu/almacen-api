@@ -30,28 +30,21 @@ public class ArticuloController : ControllerBase
         [FromQuery]
         int limit = 6,
         [FromQuery]
-        String? nombre = null 
+        String? nombre = ""
     )
     {
         var offset =  ( page - 1 ) * limit;
-        int total_objects = context.Articulo.ToList().Count;
+        int total_objects = context.Articulo.Where(item => item.nombre.Contains(nombre)).ToList().Count;
         var total_pages = (int)Math.Ceiling((total_objects / (double)limit));
         if(page < 1 || page > total_pages) {
             return BadRequest($"Page {page} not suported");
         }
-        var results = new List<Articulo>();
-        if(nombre != null) {
-            results = await context.Articulo
-            .Where(item => item.nombre.Contains(nombre))
-            .Skip(offset)
-            .Take(limit)
-            .ToListAsync();
-        } else {
-            results = await context.Articulo
-            .Skip(offset)
-            .Take(limit)
-            .ToListAsync();
-        }
+
+        var results = await context.Articulo
+        .Where(item => item.nombre.Contains(nombre))
+        .Skip(offset)
+        .Take(limit)
+        .ToListAsync();
 
         int previousPage = -1;
         int nextPage = -1;
@@ -127,9 +120,9 @@ public class ArticuloController : ControllerBase
     }
     
 
- [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete() {
-          var res = context.Articulo.SingleOrDefault(item => item.cod == Convert.ToInt32(ControllerContext.RouteData.Values["id"]));
+    [HttpDelete("{cod}")]
+    public async Task<ActionResult> Delete(int cod) {
+          var res = context.Articulo.SingleOrDefault(item => item.cod == cod);
           if(res != null) {
             /*
             var articulos = await context.Articulo.Where(item => item.cod == Convert.ToInt32(ControllerContext.RouteData.Values["id"])).ToListAsync();
@@ -143,6 +136,4 @@ public class ArticuloController : ControllerBase
         }
         return BadRequest("Error, no se ha borrado ");
     }
-
-
 }
