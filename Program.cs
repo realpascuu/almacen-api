@@ -1,5 +1,6 @@
 using almacenAPI;
 using Microsoft.EntityFrameworkCore;
+using almacenAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //RELATIVE PATH PARA DARIO PLS.
 builder.Services.AddDbContext<ApplicationDbContext>(opciones =>
-opciones.UseSqlite("Data Source=db\\Almacen.db"));
+// docker 
+opciones.UseSqlite("Data Source=/db/Almacen.db"));
+// develop
+//opciones.UseSqlite("Data Source=db\\Almacen.db"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
