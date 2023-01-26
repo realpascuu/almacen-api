@@ -20,9 +20,9 @@ public class ArticuloController : ControllerBase
     {
         return await context.Articulo.ToListAsync();
     }
-     [HttpGet]
+    [HttpGet]
     [Route("page")]
-    public async Task<ActionResult<Pagination<Articulo>>> GetList(
+    public async Task<ActionResult<PaginationArticulo<Articulo>>> GetList(
         [FromQuery]
         string? orderby = "nombre",
         [FromQuery]
@@ -39,18 +39,27 @@ public class ArticuloController : ControllerBase
         }
 
         var results = await context.Articulo
-        .OrderBy(/*Articulo.getFunctionOrderBy(orderby)*/item => item.nombre)
-        //.ThenBy(Articulo.getFunctionOrderBy("nombre"))
         .Skip(offset)
         .Take(limit)
         .ToListAsync();
 
-        return new Pagination<Articulo>(
+        int previousPage = -1;
+        int nextPage = -1;
+
+        if(page > 1)
+            previousPage = page - 1 ;
+        if(page < total_pages)
+            nextPage = page + 1 ;
+
+        return new PaginationArticulo<Articulo>(
             total_objects,
             page,
             results,
             limit,
-            total_pages
+            total_pages,
+            previousPage,
+            nextPage
+            
         );
     }
 
