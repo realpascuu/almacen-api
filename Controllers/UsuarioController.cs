@@ -68,6 +68,8 @@ public class UsuariosController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Post(Usuario usuario) {
         try {
+            var hash_password = usuario.generatePasswordHash(usuario.password);
+            usuario.password = hash_password; 
             context.Add(usuario);
             await context.SaveChangesAsync();
             return Ok();
@@ -83,7 +85,9 @@ public class UsuariosController : ControllerBase
         }
         var user = context.Usuario.SingleOrDefault(item => item.email == email);
         if(user != null) {
-            user.password = usuario.password;
+            if(usuario.password != null && usuario.password != "") {
+                user.password = usuario.generatePasswordHash(usuario.password);
+            }
             user.nombre = usuario.nombre;
             user.apellidos = usuario.apellidos;
             user.dni = usuario.telefono;

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace almacenAPI.Models;
 
@@ -15,6 +16,19 @@ public class Usuario
     public String codpos { get; set; }
     public DateTime fechanac { get; set; }
 
+    public String generatePasswordHash(String random_password)
+    {
+        var crypt = new System.Security.Cryptography.SHA256Managed();
+        var hash = new System.Text.StringBuilder();
+        byte[] crypto = crypt.ComputeHash(Encoding.UTF8.GetBytes(random_password));
+        foreach (byte theByte in crypto)
+        {
+            hash.Append(theByte.ToString("x2"));
+        }
+        return hash.ToString();
+        
+    } 
+
     public static Func<Usuario, object> getFunctionOrderBy(String orderby = "email") {
         switch(orderby.ToLower()) {
             case "nombre": return item => item.nombre;
@@ -26,4 +40,9 @@ public class Usuario
             case "email": default: return item => item.email;
         }
     }
+}
+
+public class LoginModel {
+    public String email { get; set; }
+    public String password { get; set; }
 }
