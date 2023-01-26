@@ -30,28 +30,21 @@ public class ArticuloController : ControllerBase
         [FromQuery]
         int limit = 6,
         [FromQuery]
-        String? nombre = null 
+        String? nombre = ""
     )
     {
         var offset =  ( page - 1 ) * limit;
-        int total_objects = context.Articulo.ToList().Count;
+        int total_objects = context.Articulo.Where(item => item.nombre.Contains(nombre)).ToList().Count;
         var total_pages = (int)Math.Ceiling((total_objects / (double)limit));
         if(page < 1 || page > total_pages) {
             return BadRequest($"Page {page} not suported");
         }
-        var results = new List<Articulo>();
-        if(nombre != null) {
-            results = await context.Articulo
-            .Where(item => item.nombre.Contains(nombre))
-            .Skip(offset)
-            .Take(limit)
-            .ToListAsync();
-        } else {
-            results = await context.Articulo
-            .Skip(offset)
-            .Take(limit)
-            .ToListAsync();
-        }
+
+        var results = await context.Articulo
+        .Where(item => item.nombre.Contains(nombre))
+        .Skip(offset)
+        .Take(limit)
+        .ToListAsync();
 
         int previousPage = -1;
         int nextPage = -1;
