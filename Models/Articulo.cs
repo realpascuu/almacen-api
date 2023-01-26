@@ -11,4 +11,12 @@ public class Articulo
     public float pvp { get; set; }
     public string imagen { get; set; }
     public string categoria { get; set; }
+
+
+    public static Func<Articulo, object> getFunctionOrderBy(String orderby = "nombre") {
+        switch(orderby.ToLower()) {
+            case "nombre": default: return item => item.nombre;
+           
+        }
+    }
 }
