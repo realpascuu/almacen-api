@@ -127,15 +127,22 @@ public class ArticuloController : ControllerBase
     }
     
 
- [HttpPost]
- [Route("crear")]
-    public async Task<ActionResult> Post([FromBody] Articulo json) {
-        try {
-            var result = context.Add(json);
+ [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete() {
+          var res = context.Articulo.SingleOrDefault(item => item.cod == Convert.ToInt32(ControllerContext.RouteData.Values["id"]));
+          if(res != null) {
+            /*
+            var articulos = await context.Articulo.Where(item => item.cod == Convert.ToInt32(ControllerContext.RouteData.Values["id"])).ToListAsync();
+            foreach(Articulo l in articulos) {
+                context.Articulo.Remove(l);    
+            }
+            */
+            context.Articulo.Remove(res);
             await context.SaveChangesAsync();
             return Ok();
-        } catch(Exception) {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error updating data");
         }
+        return BadRequest("Error, no se ha borrado ");
     }
+
+
 }
