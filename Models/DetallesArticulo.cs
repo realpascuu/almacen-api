@@ -2,20 +2,12 @@ namespace almacenAPI.Models
 {
     public class DetallesArticulo<T>
     {
-
-        public List<T> results { get; set; }
-
+        public List<T> producto { get; set; }
         public DetallesArticulo(
-            int total_objects,
-            int page,
-            List<T> results,
-            int limit,
-            int total_pages,
-            int previousPage,
-            int nextPage
+            List<T> producto
         ) 
         {
-            this.results = results;
+            this.producto = producto;
         }
     }
 }
