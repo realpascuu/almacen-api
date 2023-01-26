@@ -64,18 +64,38 @@ public class ArticuloController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<DetallesArticulo<Articulo>>> GetByIdAsync(int cod)
+    public async Task<ActionResult<DetallesArticulo<Articulo>>> GetById()
     {
+         List<Articulo> producto = new List<Articulo>();
+         var res = context.Articulo.FirstOrDefault(item => item.cod == Convert.ToInt32(ControllerContext.RouteData.Values["id"]));
+    
+        if(res!=null){
+        producto.Add(res);
+         return new DetallesArticulo<Articulo>(
+             producto
+         );
+        }
+        /*
         var results = await context.Articulo
         .ToListAsync();
         
-        results = (List<Articulo>)results.Where(item => item.cod == cod);
-
+        foreach (var res in results.ToList())
+            {
+                if(res.cod == cod){
+                    List<Articulo> producto = new List<Articulo>();
+                    producto.Add(res);
+                    return new DetallesArticulo<Articulo>(
+                        producto
+                    );
+                }
+            }
+            /*
         if(results != null){
             return new DetallesArticulo<Articulo>(
                 results
             );
         }
+        */
         return BadRequest("No existe el producto, Error");
     }
 
