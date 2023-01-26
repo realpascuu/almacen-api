@@ -28,7 +28,9 @@ public class ArticuloController : ControllerBase
         [FromQuery]
         int page = 1, 
         [FromQuery]
-        int limit = 6
+        int limit = 6,
+        [FromQuery]
+        String? nombre = null 
     )
     {
         var offset =  ( page - 1 ) * limit;
@@ -37,11 +39,19 @@ public class ArticuloController : ControllerBase
         if(page < 1 || page > total_pages) {
             return BadRequest($"Page {page} not suported");
         }
-
-        var results = await context.Articulo
-        .Skip(offset)
-        .Take(limit)
-        .ToListAsync();
+        var results = new List<Articulo>();
+        if(nombre != null) {
+            results = await context.Articulo
+            .Where(item => item.nombre.Contains(nombre))
+            .Skip(offset)
+            .Take(limit)
+            .ToListAsync();
+        } else {
+            results = await context.Articulo
+            .Skip(offset)
+            .Take(limit)
+            .ToListAsync();
+        }
 
         int previousPage = -1;
         int nextPage = -1;
