@@ -19,6 +19,7 @@ public class ApplicationDbContext: DbContext
     public DbSet<Articulo> Articulo { get; set; }
     public DbSet<Almacen_Articulo> Almacen_Articulo { get; set; }
     public DbSet<Almacen> Almacen { get; set; }
+    public DbSet<Categoria> Categoria { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

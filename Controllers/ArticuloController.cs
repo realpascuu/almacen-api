@@ -103,4 +103,17 @@ public class ArticuloController : ControllerBase
         return BadRequest("No existe el producto, Error");
     }
 
+
+    [HttpGet]
+    [Route("categorias")]
+    public async Task<ActionResult<ListaCategorias<Categoria>>> GetList( )
+    {
+
+        var results = await context.Categoria.ToListAsync();
+
+        return new ListaCategorias<Categoria>(
+           results
+        );
+    }
+    
 }
