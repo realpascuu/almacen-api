@@ -1,5 +1,6 @@
 using almacenAPI;
 using Microsoft.EntityFrameworkCore;
+using almacenAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//RELATIVE PATH PARA DARIO PLS.
 builder.Services.AddDbContext<ApplicationDbContext>(opciones =>
+// docker 
+//opciones.UseSqlite("Data Source=/db/Almacen.db"));
+// develop
 opciones.UseSqlite("Data Source=/db/Almacen.db"));
 var app = builder.Build();
 

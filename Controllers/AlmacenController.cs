@@ -46,7 +46,7 @@ public class AlmacenController : ControllerBase
         .Take(limit)
         .ToListAsync();
 
-        return new Pagination<Almacen_Articulo>(
+        return new Pagination<Almacen>(
             total_objects,
             page,
             results,
@@ -56,7 +56,8 @@ public class AlmacenController : ControllerBase
     }
 
     [HttpGet("{nombre}")]
-    public async Task<ActionResult<Pagination<Almacen_Articulo>>> GetById(
+    
+    public async Task<ActionResult<Pagination<Almacen_ArticuloAll>>> GetById(
         String nombre,
         [FromQuery]
         string? orderby = "nombre",
@@ -69,13 +70,21 @@ public class AlmacenController : ControllerBase
        
 
         Almacen almacen =context.Almacen.FirstOrDefault(item => item.nombre == nombre);
-        var results = await almacen.getArticulosAlmacen(context);
+        if (almacen != null){
+             List<Almacen_ArticuloAll> results = new List<Almacen_ArticuloAll>();
+
+        var articulos = await context.Almacen_Articulo.Where(item => item.codAlm == almacen.id).ToListAsync();
+        foreach (var articulo in articulos)
+        {
+            results.Add(new Almacen_ArticuloAll(articulo.cantidad, context.Articulo.SingleOrDefault(item=>item.cod == articulo.codArt).nombre));
+        }
+        
         var offset =  ( page - 1 ) * limit;
         int total_objects = results.ToList().Count;
         var total_pages = (int)Math.Ceiling((total_objects / (double)limit));
         if(page < 1 || page > total_pages) {
             return BadRequest($"Page {page} not suported");}
-        var items = new Pagination<Almacen_Articulo>(          
+        var items = new Pagination<Almacen_ArticuloAll>(          
             total_objects,
             page,
             results,
@@ -85,6 +94,7 @@ public class AlmacenController : ControllerBase
         if(items != null) {
            return items;
            
+        }
         }
         return BadRequest($"Almacen with name {nombre} not found");
     }

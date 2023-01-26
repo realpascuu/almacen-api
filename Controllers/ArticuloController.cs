@@ -20,9 +20,9 @@ public class ArticuloController : ControllerBase
     {
         return await context.Articulo.ToListAsync();
     }
-     [HttpGet]
+    [HttpGet]
     [Route("page")]
-    public async Task<ActionResult<Pagination<Articulo>>> GetList(
+    public async Task<ActionResult<PaginationArticulo<Articulo>>> GetList(
         [FromQuery]
         string? orderby = "nombre",
         [FromQuery]
@@ -39,20 +39,93 @@ public class ArticuloController : ControllerBase
         }
 
         var results = await context.Articulo
-        .OrderBy(/*Articulo.getFunctionOrderBy(orderby)*/item => item.nombre)
-        //.ThenBy(Articulo.getFunctionOrderBy("nombre"))
         .Skip(offset)
         .Take(limit)
         .ToListAsync();
 
-        return new Pagination<Articulo>(
+        int previousPage = -1;
+        int nextPage = -1;
+
+        if(page > 1)
+            previousPage = page - 1 ;
+        if(page < total_pages)
+            nextPage = page + 1 ;
+
+        return new PaginationArticulo<Articulo>(
             total_objects,
             page,
             results,
             limit,
-            total_pages
+            total_pages,
+            previousPage,
+            nextPage
+            
         );
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<DetallesArticulo<Articulo>>> GetById()
+    {
+         //List<Articulo> producto = new List<Articulo>();
+         var res = context.Articulo.FirstOrDefault(item => item.cod == Convert.ToInt32(ControllerContext.RouteData.Values["id"]));
     
+        if(res!=null){
+        //producto.Add(res);
+         return new DetallesArticulo<Articulo>(
+              res.nombre,
+              res.especificaciones,
+              res.pvp,
+              res.cod,
+              res.categoria
+         );
+        }
+        /*
+        var results = await context.Articulo
+        .ToListAsync();
+        
+        foreach (var res in results.ToList())
+            {
+                if(res.cod == cod){
+                    List<Articulo> producto = new List<Articulo>();
+                    producto.Add(res);
+                    return new DetallesArticulo<Articulo>(
+                        producto
+                    );
+                }
+            }
+            /*
+        if(results != null){
+            return new DetallesArticulo<Articulo>(
+                results
+            );
+        }
+        */
+        return BadRequest("No existe el producto, Error");
+    }
+
+
+    [HttpGet]
+    [Route("categorias")]
+    public async Task<ActionResult<ListaCategorias<Categoria>>> GetList( )
+    {
+
+        var results = await context.Categoria.ToListAsync();
+
+        return new ListaCategorias<Categoria>(
+           results
+        );
+    }
+    
+
+ [HttpPost]
+ [Route("crear")]
+    public async Task<ActionResult> Post([FromBody] Articulo json) {
+        try {
+            var result = context.Add(json);
+            await context.SaveChangesAsync();
+            return Ok();
+        } catch(Exception) {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error updating data");
+        }
+    }
 }

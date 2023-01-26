@@ -18,8 +18,5 @@ public class Almacen
         }
     }
 
-   public   List<Almacen_Articulo> getArticulosAlmacen(ApplicationDbContext context)
-   {       
-        return  context.Almacen_Articulo.Where(item => item.codAlm == this.id).ToList() ;
-   }
+   
 }
