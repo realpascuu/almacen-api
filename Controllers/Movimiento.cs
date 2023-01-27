@@ -29,22 +29,41 @@ public class MovimientoController : ControllerBase
         [FromQuery]
         int page = 1, 
         [FromQuery]
-        int limit = 6
+        int limit = 6,
+        [FromQuery]
+        int almacen = -1
     )
     {
         var offset =  ( page - 1 ) * limit;
-        int total_objects = context.Movimiento.ToList().Count;
+        int total_objects = 0;
+        if(almacen > 0) {
+            total_objects = context.Movimiento
+            .Where(item => item.almacen_entrada == almacen || item.almacen_salida == almacen)
+            .ToList().Count;
+        } else {
+            total_objects = context.Movimiento.ToList().Count;
+        }
         var total_pages = (int)Math.Ceiling((total_objects / (double)limit));
         if(page < 1 || page > total_pages) {
             return BadRequest($"Page {page} not suported");
         }
-
-        var results = await context.Movimiento
-        .OrderBy(/*Movimiento.getFunctionOrderBy(orderby)*/item => item.almacen_salida)
-        //.ThenBy(Movimiento.getFunctionOrderBy("email"))
-        .Skip(offset)
-        .Take(limit)
-        .ToListAsync();
+        var results = new List<Movimiento>();
+        if(almacen > 0) {
+            results = await context.Movimiento
+                .Where(item => item.almacen_entrada == almacen || item.almacen_salida == almacen)
+                .OrderBy(/*Movimiento.getFunctionOrderBy(orderby)*/item => item.almacen_salida)
+                //.ThenBy(Movimiento.getFunctionOrderBy("email"))
+                .Skip(offset)
+                .Take(limit)
+                .ToListAsync();
+        } else {
+            results = await context.Movimiento
+                .OrderBy(/*Movimiento.getFunctionOrderBy(orderby)*/item => item.almacen_salida)
+                //.ThenBy(Movimiento.getFunctionOrderBy("email"))
+                .Skip(offset)
+                .Take(limit)
+                .ToListAsync();
+        }
 
         return new Pagination<Movimiento>(
             total_objects,
@@ -55,10 +74,24 @@ public class MovimientoController : ControllerBase
         );
     }
 
-    [HttpGet("{almacen}")]
-    public async Task<ActionResult<List<Movimiento>>> GetById(int almacen)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<MovimientoPost>> GetById(int id)
     {
-        return await context.Movimiento.Where(item => item.almacen_entrada == almacen || item.almacen_salida == almacen).ToListAsync();
+        var movimiento = context.Movimiento.FirstOrDefault(item => item.id == id);
+        if(movimiento != null) {
+            List<ArticuloMovimientoPost> articulosmovimiento = new List<ArticuloMovimientoPost>();
+            var almacen_entrada = context.Almacen.FirstOrDefault(item => item.id == movimiento.almacen_entrada); 
+            var almacen_salida = context.Almacen.FirstOrDefault(item => item.id == movimiento.almacen_salida);
+            var linpeds = await context.ArticuloMovimiento.Where(item => item.idmovimiento == id).ToListAsync();
+            foreach(var linped in linpeds) {
+                var articulo = context.Articulo.FirstOrDefault(item => item.cod == linped.articulo);
+                if(articulo != null) {
+                    articulosmovimiento.Add(new ArticuloMovimientoPost(articulo.nombre, linped.cantidad));
+                }
+            } 
+            return new MovimientoPost(almacen_entrada, almacen_salida, articulosmovimiento);
+        }
+        return BadRequest($"Movment with id {id} not found");
     }
 
 /*
