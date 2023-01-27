@@ -17,6 +17,33 @@ public class ArticuloMovimiento
     }
 }
 
+public class ArticuloMovimientoFinalCreate
+{
+    public int articulo{ get; set; }
+    public int cantidad { get; set; }
+    public int idmovimiento { get; set; }
+    
+    public ArticuloMovimientoFinalCreate(int articulo, int cantidad, int idmovimiento)
+    {
+        this.articulo=articulo;
+        this.cantidad=cantidad;
+        this.idmovimiento=idmovimiento;
+    }
+}
+
+public class ArticuloMovimientoCreate
+{   
+    public int articulo { get; set; }
+    public int cantidad { get; set; }
+
+    public ArticuloMovimientoCreate(int articulo, int cantidad)
+    {
+        this.articulo = articulo;
+        this.cantidad = cantidad;
+    }
+  
+}
+
 
 public class ArticuloMovimientoPost
 {

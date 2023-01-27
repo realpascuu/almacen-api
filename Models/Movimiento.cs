@@ -23,3 +23,10 @@ public class Movimiento
     }
     
 }
+
+public class MovimientoCreate 
+{   
+    public Movimiento movimiento { get; set; }
+    public List<ArticuloMovimientoCreate> productos { get; set; }
+}
+

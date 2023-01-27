@@ -94,48 +94,44 @@ public class MovimientoController : ControllerBase
         return BadRequest($"Movment with id {id} not found");
     }
 
-/*
     [HttpPost]
-    public async Task<ActionResult> Post( MovimientoPost movimiento) {
+    public async Task<ActionResult> Post(MovimientoCreate mov_create) {
         try {
-            var almacen_e = context.Almacen.SingleOrDefault(item => item.id == movimiento.almacen_entrada);
-            var almacen_s = context.Almacen.SingleOrDefault(item => item.id == movimiento.almacen_salida);
-            if(almacen_e != null && almacen_s != null && movimiento.articulosmovimiento.Count!= 0) {
-                var mov = new Movimiento(movimiento.almacen_entrada, movimiento.almacen_salida);
-                context.Add(mov);
-                var idmov = context.Movimiento.Last().id;
-
-                    foreach(ArticuloMovimientoPost art in movimiento.articulosmovimiento)
-                    {
-                        var alm_art_s = context.Almacen_Articulo.SingleOrDefault(item => item.codAlm == almacen_s.id & item.codArt == art.articulo && item.cantidad<art.cantidad  );
-                        if (alm_art_s!=null)
-                        {
-                            var alm_art_e = context.Almacen_Articulo.SingleOrDefault(item => item.codAlm == almacen_e.id &&   item.codArt == art.articulo );
-                            if (alm_art_e!=null)
-                            {
-                                alm_art_e.cantidad += art.cantidad;
-                                alm_art_s.cantidad -= art.cantidad;
-                            }else
-                            {
-                                alm_art_s.cantidad -= art.cantidad;
-                                context.Add(new Almacen_Articulo(almacen_e.id ,art.articulo,art.cantidad));
-                            }
-                            context.Add(new ArticuloMovimiento( art.articulo,art.cantidad,idmov) );
-                        }else
-                        {
-                            throw new Exception("Fallo con el primer almacen");
-                        }
-
+            var errors = new List<String>();
+            var movimiento = mov_create.movimiento;
+            var some_add = false; 
+            var added = new List<ArticuloMovimientoFinalCreate>();
+            context.Add(movimiento);
+            foreach(var producto in mov_create.productos) {
+                var alm_art = context.Almacen_Articulo.FirstOrDefault(item => item.codAlm == movimiento.almacen_salida && item.codArt == producto.articulo);
+                Console.WriteLine(alm_art);
+                if(alm_art != null && alm_art.cantidad >= producto.cantidad) {
+                    some_add = true;
+                    alm_art.cantidad = alm_art.cantidad - producto.cantidad;
+                    var alm_art_entrada = context.Almacen_Articulo.FirstOrDefault(item => item.codAlm == movimiento.almacen_entrada && item.codArt == producto.articulo);
+                    if(alm_art_entrada != null) {
+                        alm_art_entrada.cantidad = alm_art_entrada.cantidad + producto.cantidad; 
+                    } else {
+                        var new_almacen_art = new Almacen_Articulo(movimiento.almacen_entrada, producto.articulo, producto.cantidad);
+                        context.Add(new_almacen_art);
                     }
-
-                await context.SaveChangesAsync();
-                return Ok();
+                    
+                    var art_mov = new ArticuloMovimientoFinalCreate(producto.articulo, producto.cantidad, movimiento.id);
+                    //context.Add(art_mov);
+                    added.Add(art_mov);
+                } else {
+                    errors.Add("Movement not supported");
+                }
             }
-            throw new Exception("Fallo parametros");
-        } catch(Exception) {
+            if (some_add == true) {
+                await context.SaveChangesAsync();
+                foreach(var add in added) {
+                    context.Add(new ArticuloMovimiento(add.articulo, add.cantidad, add.idmovimiento));
+                }
+            }
+            return Ok(errors);
+        } catch(Exception e) {
             return StatusCode(StatusCodes.Status500InternalServerError, "Error updating data");
         }
     }
-   
-    */
 }
