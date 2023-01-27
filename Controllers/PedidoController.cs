@@ -70,11 +70,19 @@ public class PedidosController : ControllerBase
 
     // TODO: detalles pedido se quiere linped
     [HttpGet("{numped}")]
-    public async Task<ActionResult<Pedido>> GetById(int numped)
+    public async Task<ActionResult<PedidoWithLinpeds>> GetById(int numped)
     {
         var pedido = context.Pedido.FirstOrDefault(item => item.numped == numped);
+        var results = new List<PedidoDetails>();
         if(pedido != null) {
-            return pedido;
+            var linpeds = await context.Linped.Where(item => item.pedido == numped).ToListAsync();
+            foreach(var linped in linpeds) {
+                var articulo = context.Articulo.Where(item => item.cod == linped.codArt).FirstOrDefault();
+                if(articulo != null) {
+                    results.Add(new PedidoDetails(articulo.nombre, linped.cantidad, articulo.pvp));
+                }
+            }
+            return new PedidoWithLinpeds(pedido, results);
         }
         return BadRequest($"Pedido with numped {numped} not found");
     }
