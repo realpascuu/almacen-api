@@ -76,7 +76,8 @@ public class AlmacenController : ControllerBase
         var articulos = await context.Almacen_Articulo.Where(item => item.codAlm == almacen.id).ToListAsync();
         foreach (var articulo in articulos)
         {
-            results.Add(new Almacen_ArticuloAll(articulo.cantidad, context.Articulo.SingleOrDefault(item=>item.cod == articulo.codArt*).nombre));
+            var art =  context.Articulo.SingleOrDefault(item=>item.cod == articulo.codArt);
+            results.Add(new Almacen_ArticuloAll(articulo.cantidad, art.nombre, art.cod));
         }
         
         var offset =  ( page - 1 ) * limit;
