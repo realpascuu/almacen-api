@@ -23,7 +23,7 @@ public class UsuariosController : ControllerBase
 
     [HttpGet]
     [Route("page")]
-    public async Task<ActionResult<Pagination<Usuario>>> GetList(
+    public async Task<ActionResult<PaginationArticulo<Usuario>>> GetList(
         [FromQuery]
         string? orderby = "email",
         [FromQuery]
@@ -46,12 +46,22 @@ public class UsuariosController : ControllerBase
         .Take(limit)
         .ToListAsync();
 
-        return new Pagination<Usuario>(
+        int previousPage = -1;
+        int nextPage = -1;
+
+        if(page > 1)
+            previousPage = page - 1 ;
+        if(page < total_pages)
+            nextPage = page + 1 ;
+
+        return new PaginationArticulo<Usuario>(
             total_objects,
             page,
             results,
             limit,
-            total_pages
+            total_pages,
+            previousPage,
+            nextPage
         );
     }
 
