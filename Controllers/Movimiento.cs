@@ -112,6 +112,7 @@ public class MovimientoController : ControllerBase
                     if(alm_art_entrada != null) {
                         alm_art_entrada.cantidad = alm_art_entrada.cantidad + producto.cantidad; 
                     } else {
+                        Console.WriteLine(movimiento.id);
                         var new_almacen_art = new Almacen_Articulo(movimiento.almacen_entrada, producto.articulo, producto.cantidad);
                         context.Add(new_almacen_art);
                     }
@@ -125,9 +126,12 @@ public class MovimientoController : ControllerBase
             }
             if (some_add == true) {
                 await context.SaveChangesAsync();
+                Console.WriteLine(movimiento.id);
+                
                 foreach(var add in added) {
-                    context.Add(new ArticuloMovimiento(add.articulo, add.cantidad, add.idmovimiento));
+                    context.Add(new ArticuloMovimiento(add.articulo, add.cantidad, movimiento.id));
                 }
+                await context.SaveChangesAsync();
             }
             return Ok(errors);
         } catch(Exception e) {
