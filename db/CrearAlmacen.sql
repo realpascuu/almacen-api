@@ -74,7 +74,7 @@ create TABLE Movimiento
 (
 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 almacen_salida int CONSTRAINT fk_almacen_salida REFERENCES Almacen (id) ON DELETE CASCADE,
-almacen_entrada int CONSTRAINT fk_almacen_entrada REFERENCES Almacen (id) ON DELETE CASCADE,
+almacen_entrada int CONSTRAINT fk_almacen_entrada REFERENCES Almacen (id) ON DELETE CASCADE
 
 );
 
@@ -92,11 +92,18 @@ create TABLE ArticuloMovimiento
 INSERT INTO Usuario VALUES ('user@alu.es', '123', 'usuario', 'user1 user1', '12345678A', 123456789, 'calle1', 03030 , '2020-02-20' );
 INSERT INTO Usuario VALUES ('user2@alu.es', '123', 'usuario2', 'user2 user2', '98765432A', 123456789, 'calle2', 03031 , '2022-03-21' );
 
-INSERT INTO Almacen (localidad, nombre) VALUES ('Alicante', 'Almacen1');
-INSERT INTO Almacen (localidad, nombre) VALUES ('Valencia', 'Almacen2');
+INSERT INTO Almacen (localidad, nombre) VALUES ('Alicante', 'Almacen Alicante');
+INSERT INTO Almacen (localidad, nombre) VALUES ('Valencia', 'Almacen Valencia');
+INSERT INTO Almacen (localidad, nombre) VALUES ('Madrid', 'Almacen Madrid');
 
 INSERT INTO Categoria VALUES ('Adidas', 'Adidas');
 INSERT INTO Categoria VALUES ('Nike', 'Nike');
+
+INSERT INTO Categoria VALUES('Iphone', 'Apple');
+INSERT INTO Categoria VALUES('Mac','Apple');
+INSERT INTO Categoria VALUES('Mac','Apple');
+
+
 
 INSERT INTO Articulo (nombre, especificaciones, pvp, imagen, categoria) values ('zapas1', 'unas zapatillas de superputamadresocio', 35,"PRUEBA SIN IMAGEN" , 'Adidas');
 INSERT INTO Articulo (nombre, especificaciones, pvp, imagen, categoria) values ('coche1', 'broom broom', 400000,"PRUEBA SIN IMAGEN" , 'Ferrari');
@@ -119,5 +126,5 @@ INSERT INTO LinPed (cantidad,codArt,pedido) values (2,5,1);
 
 
 INSERT INTO Movimiento (almacen_salida, almacen_entrada) VALUES (1,2);
-
+insert into ArticuloMovimiento (articulo, cantidad, idmovimiento) values (13,1,3);
 COMMIT;

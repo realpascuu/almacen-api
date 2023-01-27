@@ -111,8 +111,10 @@ public class ArticuloController : ControllerBase
 
     [HttpDelete("{cod}")]
     public async Task<ActionResult> Delete(int cod) {
-          var res = context.Articulo.SingleOrDefault(item => item.cod == cod);
+        Console.WriteLine("entra aqui");
+          Articulo res = context.Articulo.SingleOrDefault(item => item.cod == cod);
           if(res != null) {
+            Console.WriteLine(res.nombre);
             /*
             var articulos = await context.Articulo.Where(item => item.cod == Convert.ToInt32(ControllerContext.RouteData.Values["id"])).ToListAsync();
             foreach(Articulo l in articulos) {
