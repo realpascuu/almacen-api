@@ -82,30 +82,19 @@ public class ArticuloController : ControllerBase
               res.categoria
          );
         }
-        /*
-        var results = await context.Articulo
-        .ToListAsync();
-        
-        foreach (var res in results.ToList())
-            {
-                if(res.cod == cod){
-                    List<Articulo> producto = new List<Articulo>();
-                    producto.Add(res);
-                    return new DetallesArticulo<Articulo>(
-                        producto
-                    );
-                }
-            }
-            /*
-        if(results != null){
-            return new DetallesArticulo<Articulo>(
-                results
-            );
-        }
-        */
         return BadRequest("No existe el producto, Error");
     }
 
+    [HttpPost]
+    public async Task<ActionResult> Post(Articulo articulo) {
+        try {
+            context.Add(articulo);
+            await context.SaveChangesAsync();
+            return Ok();
+        } catch(Exception) {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error creating data");
+        }
+    }
 
     [HttpGet]
     [Route("categorias")]
