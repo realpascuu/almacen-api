@@ -34,12 +34,14 @@ public class Almacen_ArticuloAll
     
     public int cantidad { get; set; }    
     public string articulo{get;set;}
+    public int id{get;set;}
 
-     public Almacen_ArticuloAll( int cantidad, string articulo)
+     public Almacen_ArticuloAll( int cantidad, string articulo, int codigo)
     {
         this.cantidad = cantidad;
        
         this.articulo = articulo;
+        this.id = codigo;
     }  
 
 }

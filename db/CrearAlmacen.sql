@@ -75,14 +75,13 @@ create TABLE Movimiento
 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 almacen_salida int CONSTRAINT fk_almacen_salida REFERENCES Almacen (id) ON DELETE CASCADE,
 almacen_entrada int CONSTRAINT fk_almacen_entrada REFERENCES Almacen (id) ON DELETE CASCADE,
-articulo string,
-cantidad int
+
 );
 
 create TABLE ArticuloMovimiento
 (
     id INTEGER not NULL PRIMARY KEY AUTOINCREMENT,
-    articulo string,
+    articulo int,
     cantidad int,
     idmovimiento int CONSTRAINT fk_movimiento REFERENCES Movimiento (id) ON DELETE CASCADE
 );
@@ -109,6 +108,7 @@ INSERT INTO Articulo (nombre, especificaciones, pvp, imagen, categoria) values (
 INSERT INTO Almacen_Articulo values(1,1,20);
 INSERT INTO Almacen_Articulo values(1,2,30);
 INSERT INTO Almacen_Articulo values(1,3,10);
+INSERT INTO Almacen_Articulo values(2,3,10);
 
 INSERT INTO Pedido (fecha_pedido) values('2023-01-15');
 INSERT INTO Pedido (venta,fecha_pedido) values(false,'2023-01-17');
@@ -117,5 +117,7 @@ INSERT INTO LinPed (cantidad,codArt,pedido) values (10,1,1);
 INSERT INTO LinPed (cantidad,codArt,pedido) values (15,3,1);
 INSERT INTO LinPed (cantidad,codArt,pedido) values (2,5,1);
 
+
+INSERT INTO Movimiento (almacen_salida, almacen_entrada) VALUES (1,2);
 
 COMMIT;
